@@ -52,19 +52,24 @@ class _HomeState extends State<Home> {
                             onPostChange: _handleToDoChange,
                             deletePostItem: _deletePostItem,
                           ),
+                        SizedBox(
+                          height: 90,
+                        ),
                       ],
                     ),
                   )
                 ],
               )),
-          //______________________________CREATE POST INPUT______________
+          //_________________________________________________________________________
+          //                              INPUT CREATE POST                       /
+          //========================================================================
           Align(
             alignment: Alignment.bottomCenter,
             child: Row(
               children: [
                 Expanded(
                     child: Container(
-                  margin: EdgeInsets.only(bottom: 20, right: 20, left: 20),
+                  margin: EdgeInsets.only(bottom: 20, right: 10, left: 20),
                   padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                   decoration: BoxDecoration(
                       color: Colors.white,
@@ -82,6 +87,27 @@ class _HomeState extends State<Home> {
                         hintText: 'Add a new post', border: InputBorder.none),
                   ),
                 )),
+                //_________________________________________________________________________
+                //                               BUTTON ADD IMAGE                        /
+                //========================================================================
+                Container(
+                  margin: EdgeInsets.only(bottom: 20, right: 10),
+                  child: ElevatedButton(
+                    child: Icon(Icons.add_photo_alternate_outlined,
+                        color: Colors.white, size: 30),
+                    onPressed: () {
+                      // add method addImageToPost
+                    },
+                    style: ElevatedButton.styleFrom(
+                      primary: tdBlue,
+                      minimumSize: Size(10, 60),
+                      elevation: 10,
+                    ),
+                  ),
+                ),
+                //_________________________________________________________________________
+                //                               BUTTON ADD POST                         /
+                //========================================================================
                 Container(
                   margin: EdgeInsets.only(bottom: 20, right: 20),
                   child: ElevatedButton(
@@ -107,31 +133,47 @@ class _HomeState extends State<Home> {
     );
   }
 
-//____________________________HandleToChange
+//_________________________________________________________________________
+//                                Handle to change                        /
+//========================================================================
   void _handleToDoChange(Post post) {
     setState(() {
-      post.isDone = !post.isDone;
+      post.isFav = !post.isFav;
+      if (post.isFav == true) {
+        post.likes = post.likes! + 1;
+      } else {
+        post.likes = post.likes! - 1;
+      }
     });
   }
 
-//______________________________Delete post
+//_________________________________________________________________________
+//                                Delete post                             /
+//========================================================================
   void _deletePostItem(String id) {
     setState(() {
       postList.removeWhere((item) => item.id == id);
     });
   }
 
-//______________________________Create post
+//_________________________________________________________________________
+//                                Create post                             /
+//========================================================================
   void _addPostItem(String description) {
     setState(() {
       postList.add(Post(
           id: DateTime.now().millisecondsSinceEpoch.toString(),
-          description: description));
+          description: description,
+          date: '1 min',
+          imageUser: '',
+          user: 'juan'));
     });
     _postController.clear();
   }
 
-//____________________________SEARCH INPUT__________________________________
+//_________________________________________________________________________
+//                              Search input                             /
+//========================================================================
   Widget searchBox() {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 15),
@@ -139,7 +181,7 @@ class _HomeState extends State<Home> {
           color: Colors.white, borderRadius: BorderRadius.circular(20)),
       child: TextField(
         onChanged: (value) => _runFilter(value),
-        decoration: InputDecoration(
+        decoration: const InputDecoration(
             contentPadding: EdgeInsets.all(0),
             prefixIcon: Icon(Icons.search, color: tdBlack, size: 20),
             prefixIconConstraints: BoxConstraints(maxHeight: 20, minWidth: 25),
@@ -150,7 +192,9 @@ class _HomeState extends State<Home> {
     );
   }
 
-//________________________FUND POST_________________
+//_________________________________________________________________________
+//                              Find posts                             /
+//========================================================================
   void _runFilter(String enteredKeyword) {
     List<Post> results = [];
     if (enteredKeyword.isEmpty) {
@@ -168,7 +212,9 @@ class _HomeState extends State<Home> {
     });
   }
 
-// -----------------------------HEAD-------------------------------------------
+//_________________________________________________________________________
+//                                H3AD POST                             /
+//========================================================================
   AppBar _buildAppBar() {
     return AppBar(
       backgroundColor: tdBGColor,
@@ -186,12 +232,12 @@ class _HomeState extends State<Home> {
                 Text("Fisrty", style: TextStyle(color: tdBlack, fontSize: 27)),
           ),
           Container(
-            height: 40,
-            width: 40,
-            child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Image.asset('assets/images/bob.jpg')),
-          )
+              height: 40,
+              width: 40,
+              child: Icon(
+                Icons.person,
+                color: Colors.black,
+              ))
         ],
       ),
     );
